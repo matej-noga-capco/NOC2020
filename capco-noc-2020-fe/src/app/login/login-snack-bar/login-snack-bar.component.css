@@ -1,0 +1,5 @@
+::ng-deep snack-bar-container.sb-custom {
+  background-color: #8f0000;
+  color: white;
+  margin-bottom: 5rem;
+}

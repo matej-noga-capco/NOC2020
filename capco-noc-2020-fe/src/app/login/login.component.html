@@ -1,0 +1,16 @@
+<div class="page-content-wrapper">
+  <h1>Login</h1>
+  <form class="login-container" (keydown)="keyPressed($event)">
+    <div class="username-field">
+      <mat-form-field>
+        <input matInput placeholder="Username" [(ngModel)]="username" [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+    </div>
+    <div class="password-field">
+      <mat-form-field>
+        <input matInput placeholder="Password" type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+    </div>
+    <button type="button" mat-raised-button class="login-button" (click)="onSubmitLogin()" >Login</button>
+  </form>
+</div>

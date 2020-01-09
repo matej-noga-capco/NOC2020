@@ -1,0 +1,48 @@
+
+.transactions-content {
+  background-color: white;
+  padding: 2rem 2rem 1rem 2rem;
+}
+
+.profile-content {
+  width: 25rem;
+  background-color: #F2F2F2;
+  padding: 2rem 2rem 1rem 2rem;
+}
+
+#profile-page {
+  top: 6.25rem !important;
+}
+
+.user-image {
+  max-width: 12rem;
+}
+
+#user-image-section {
+  display: flex;
+  justify-content: center;
+}
+
+#user-basic-info-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.user-details-row {
+  display: flex;
+  justify-content: space-between
+}
+
+#logout-section {
+  margin-top: 2rem;
+}
+
+.logout-button {
+  background-color: #8f0000;
+  color: white;
+}
+
+.current-state {
+  margin-top: 4rem;
+}

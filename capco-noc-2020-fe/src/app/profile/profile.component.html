@@ -1,0 +1,35 @@
+<mat-sidenav-container id="profile-page" fullscreen>
+  <mat-sidenav mode="side" class="profile-content" opened>
+    <div id="user-image-section">
+      <img src="./assets/user-image.png" class="user-image">
+    </div>
+    <div id="user-basic-info-section">
+      <h2>{{currentUser.firstName}} {{currentUser.lastName}}</h2>
+    </div>
+    <div id="user-details">
+      <div class="user-details-row">
+        <p>IBAN</p>
+        <p><strong>{{currentUser.iban}}</strong></p>
+      </div>
+      <div class="user-details-row">
+        <p>Birth date</p>
+        <p><strong>{{currentUser.birthDate | date:'dd.MM.yyyy'}}</strong></p>
+      </div>
+      <div class="user-details-row">
+        <p>Username</p>
+        <p><strong>{{currentUser.username}}</strong></p>
+      </div>
+    </div>
+    <div id="logout-section">
+      <button mat-flat-button class="logout-button" (click)="logout()">Logout</button>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content class="transactions-content">
+    <app-transactions-table [transactions]="transactions" [currentUser]="currentUser"></app-transactions-table>
+    <div class="current-state">
+      <p>Current account state</p>
+      <h2 >{{currentAccountState}} EUR</h2>
+    </div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

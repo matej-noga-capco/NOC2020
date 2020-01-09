@@ -1,0 +1,20 @@
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+  color: white;
+  text-align: center;
+  height: 3rem;
+  z-index: 9999;
+}
+
+.footer-content {
+  display: flex;
+}
+
+#capco-copyright {
+  position: relative;
+  width: 100%;
+  padding-top: 1rem;
+}
