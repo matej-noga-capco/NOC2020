@@ -29,8 +29,8 @@ public class InitService {
 
     @PostConstruct
     private void init() throws IOException {
-        final String usersJson = getJsonAbsolute("users.json");
-        final String transactionsJson = getJsonAbsolute("transactions.json");
+        final String usersJson = getJson("users.json");
+        final String transactionsJson = getJson("transactions.json");
 
         final List<UserDto> users = objectMapper.readValue(usersJson, new TypeReference<List<UserDto>>() {
         });
@@ -42,7 +42,7 @@ public class InitService {
     }
 
     private String getJson(String fileName) throws IOException {
-        return IOUtils.toString(resourceLoader.getResource("classpath:" + fileName).getInputStream(), StandardCharsets.UTF_8.name());
+        return IOUtils.toString(resourceLoader.getResource("classpath:jsons/" + fileName).getInputStream(), StandardCharsets.UTF_8.name());
     }
 
     private String getJsonAbsolute(String fileName) throws IOException {
