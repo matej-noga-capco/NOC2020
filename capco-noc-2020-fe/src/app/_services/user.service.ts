@@ -1,82 +1,58 @@
 import { Injectable } from '@angular/core';
 import {User} from "../_models/user";
+import {HttpClient} from "@angular/common/http";
+import {ConstantsHelper} from "../_helpers/constants.helper";
 
-declare function require(url: string);
+const REST_API_URL_USERS = ConstantsHelper.REST_API_BASE_URL + "/user";
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-  private users: User[] = [];
-
-  constructor() {
-    this.users = this.processJsonDataToUsersList(this.getRawUsers()); // load users from storage
+  constructor(private httpClient: HttpClient) {
   }
 
-  private getRawUsers(): Array<any> {
-    // this SHOULD be replaced by REST call
-    return require('../_mock-data/users.json');
+  public getUsers(): Promise<User[]> {
+    return this.httpClient.get<User[]>(REST_API_URL_USERS).toPromise();
   }
 
-  public getUserById(id: number): User {
-    // this may be replaced by REST call
-
-    let userWithGivenId: User = undefined;
-    this.users.forEach(user => {
-      if ((user.id !== undefined || id !== undefined) && user.id === id) {
-        userWithGivenId = user;
-      }
-    });
-
-    if (userWithGivenId) {
-      return userWithGivenId;
-    } else {
-      throw new Error("User with ID: " + id + " does not exist.");
-    }
+  public async getUserById(id: number): Promise<User> {
+    return this.httpClient.get<User>(REST_API_URL_USERS+"/"+id).toPromise();
   }
 
-  public getUserByToken(token: string): User {
-    // this may be replaced by REST call
-
-    let userWithGivenToken: User = undefined;
-    this.users.forEach(user => {
-      if ((user.token !== undefined || token !== undefined) && user.token === token) {
-        userWithGivenToken = user;
-      }
-    });
-
-    if (userWithGivenToken) {
-      return userWithGivenToken;
-    } else {
-      throw new Error("User with token: " + token + " does not exist.");
-    }
-  }
-
-  public getUserByUsernameAndPassword(username: string, password: string): User {
-    // this may be replaced by REST call
-    if (username && password) {
-      let foundUser: User = undefined;
-      this.users.forEach(user => {
-        if (user.username == username && user.password == password) {
-          foundUser = user;
-          foundUser.token = this.getRandomToken();
+  public async getUserByToken(token: string): Promise<User> {
+    return this.getUsers().then(users => {
+      let userWithGivenToken: User = undefined;
+      users.forEach(user => {
+        if ((user.token !== undefined || token !== undefined) && user.token === token) {
+          userWithGivenToken = user;
         }
       });
-      return foundUser;
-    }
-    throw new Error("Username and password can not be empty.");
+
+      if (userWithGivenToken) {
+        return userWithGivenToken;
+      } else {
+        return undefined;
+      }
+    });
+  }
+
+  public async getUserByUsernameAndPassword(username: string, password: string): Promise<User> {
+    return this.getUsers().then(users => {
+      if (username && password) {
+        let foundUser: User = undefined;
+        users.forEach(user => {
+          if (user.username == username && user.password == password) {
+            foundUser = user;
+            foundUser.token = this.getRandomToken();
+          }
+        });
+        return foundUser;
+      }
+      throw new Error("Username and password can not be empty.");
+    });
   }
 
   private getRandomToken() {
     return Math.random().toString(36);
-  }
-
-  // Help method to convert JSON data to list of User objects
-  private processJsonDataToUsersList(usersDataJson: any): User[] {
-    let processedUsers: Array<User> = [];
-    usersDataJson.forEach(userJson => {
-      processedUsers.push(User.parseFromJson(
-        userJson.id, userJson.username, userJson.password, userJson.firstName, userJson.lastName, userJson.birthDate, userJson.iban, userJson.token ? userJson.token : undefined));
-    });
-    return processedUsers;
   }
 }

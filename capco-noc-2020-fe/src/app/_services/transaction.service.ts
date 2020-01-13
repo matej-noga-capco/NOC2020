@@ -1,44 +1,49 @@
 import { Injectable } from '@angular/core';
 import {Transaction} from "../_models/transaction";
 import {UserService} from "./user.service";
-import {User} from "../_models/user";
+import {HttpClient} from "@angular/common/http";
+import {ConstantsHelper} from "../_helpers/constants.helper";
 
-declare function require(url: string);
+const REST_API_URL_TRANSACTIONS = ConstantsHelper.REST_API_BASE_URL + "/transaction";
 
 @Injectable({ providedIn: 'root' })
 export class TransactionService {
 
-  private transactions: Transaction[] = [];
-
-  constructor(private userService: UserService) {
-    this.transactions = this.processJsonDataToTransactionsList(this.getRawTransactions()); // load users from storage
+  constructor(private httpClient: HttpClient, private userService: UserService) {
   }
 
-  private getRawTransactions(): Array<any> {
-    // this SHOULD be replaced by REST call
-    return require('../_mock-data/transactions.json');
-  }
+  public async getTransactions(): Promise<Transaction[]> {
 
-  public getTransactionsOfUser(id: number) {
-    // this may be replaced by REST call
-    let transactionsOfUser: Transaction[] = [];
-    this.transactions.forEach(transaction => {
-      if (transaction.payer.id === id || transaction.receiver.id === id) {
-        transactionsOfUser.push(transaction);
-      }
+    let transactionsArray = await this.httpClient.get<Array<any>>(REST_API_URL_TRANSACTIONS).toPromise();
+    let transactionObjects = new Array<Transaction>();
+
+    for(let i = 0; i < transactionsArray.length; i++) {
+
+      let t = transactionsArray[i];
+      let tObject = new Transaction();
+
+      tObject.id = t.id;
+      tObject.amount = t.amount;
+      tObject.date = t.date;
+      tObject.payer = await this.userService.getUserById(t.payer);
+      tObject.receiver = await this.userService.getUserById(t.receiver);
+      transactionObjects.push(tObject);
+    }
+
+    return new Promise<Transaction[]>((resolve, reject) => {
+      resolve(transactionObjects);
     });
-    return transactionsOfUser;
   }
 
-  // Help method to convert JSON data to list of Transaction objects
-  private processJsonDataToTransactionsList(transactionsDataJson: any): Transaction[] {
-    let processedTransactions: Array<Transaction> = [];
-    transactionsDataJson.forEach(transactionJson => {
-      let payer = this.userService.getUserById(Number.parseInt(transactionJson.payer));
-      let receiver = this.userService.getUserById(Number.parseInt(transactionJson.receiver));
-      processedTransactions.push(
-        Transaction.parseFromJson(transactionJson.id, payer, receiver, transactionJson.date, transactionJson.amount));
+  public async getTransactionsOfUser(id: number): Promise<Transaction[]> {
+    return this.getTransactions().then(transactions => {
+      let transactionsOfUser: Transaction[] = [];
+      transactions.forEach(transaction => {
+        if (transaction.payer.id === id || transaction.receiver.id === id) {
+          transactionsOfUser.push(transaction);
+        }
+      });
+      return transactionsOfUser;
     });
-    return processedTransactions;
   }
 }

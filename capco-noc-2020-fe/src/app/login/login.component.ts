@@ -28,11 +28,13 @@ export class LoginComponent implements OnInit {
     if (this.loginSnackBar) {
       this.loginSnackBar.dismiss();
     }
-    if (this.authenticationService.login(this.username, this.password)) {
-      this.router.navigate(['/profile']);
-    } else {
-      this.openSnackBar();
-    }
+    this.authenticationService.login(this.username, this.password).then(result => {
+      if (result) {
+        this.router.navigate(['/profile']);
+      } else {
+        this.openSnackBar();
+      }
+    });
   }
 
   private openSnackBar() {

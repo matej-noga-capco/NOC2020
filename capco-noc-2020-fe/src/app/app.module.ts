@@ -23,6 +23,7 @@ import { LoginSnackBarComponent } from './login/login-snack-bar/login-snack-bar.
 import {MatSidenavModule} from "@angular/material/sidenav";
 import { TransactionsTableComponent } from './_modules/transactions-table/transactions-table.component';
 import {MatTableModule} from "@angular/material/table";
+import {DatePipe} from "@angular/common";
 
 const appRoutes: Routes = [
   {
@@ -80,6 +81,7 @@ const appRoutes: Routes = [
     MatTableModule
   ],
   providers: [
+      DatePipe
   ],
   exports: [
     HeaderComponent

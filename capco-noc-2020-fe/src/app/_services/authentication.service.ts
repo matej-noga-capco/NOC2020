@@ -1,4 +1,4 @@
-import { Injectable, Type } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {User} from "../_models/user";
 import {UserService} from "./user.service";
 
@@ -20,7 +20,9 @@ export class AuthenticationService {
     let localStorageCurrentUserToken = localStorage.getItem(LS_USER_TOKEN_KEY);
     if (localStorageCurrentUserToken) {
       try {
-        this.currentUser = this.userService.getUserByToken(localStorageCurrentUserToken);
+        this.userService.getUserByToken(localStorageCurrentUserToken).then(user => {
+          this.currentUser = user;
+        });
       } catch (error) {
         console.warn(error);
         localStorage.removeItem(LS_USER_TOKEN_KEY);
@@ -36,9 +38,9 @@ export class AuthenticationService {
     }
   }
 
-  login(username, password) {
+  async login(username, password) {
     try {
-      let loggingInUser = this.userService.getUserByUsernameAndPassword(username, sha1(password));
+      let loggingInUser = await this.userService.getUserByUsernameAndPassword(username, sha1(password))
 
       if (loggingInUser) {
         this.currentUser = loggingInUser;
