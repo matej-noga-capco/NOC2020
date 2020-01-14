@@ -11,17 +11,19 @@ const sha1 = require('sha1');
 export class AuthenticationService {
 
   private currentUser: User;
+  private initializationDone: boolean = false;
 
   constructor(private userService: UserService) {
-    this.loadCurrentUserFromLocalStorage();
   }
 
-  private loadCurrentUserFromLocalStorage() {
+  private async loadCurrentUserFromLocalStorage(): Promise<User> {
     let localStorageCurrentUserToken = localStorage.getItem(LS_USER_TOKEN_KEY);
     if (localStorageCurrentUserToken) {
       try {
-        this.userService.getUserByToken(localStorageCurrentUserToken).then(user => {
-          this.currentUser = user;
+        this.currentUser = await this.userService.getUserByToken(localStorageCurrentUserToken);
+        this.initializationDone = true;
+        return new Promise<User>((resolve, reject) => {
+          resolve(this.currentUser);
         });
       } catch (error) {
         console.warn(error);
@@ -30,8 +32,16 @@ export class AuthenticationService {
     }
   }
 
-  public isLoggedIn() {
-    if (this.currentUser) {
+  public async isLoggedIn(): Promise<boolean> {
+
+    let currentUser: User;
+    if (!this.initializationDone) {
+      currentUser = await this.loadCurrentUserFromLocalStorage();
+    } else {
+      currentUser = this.currentUser;
+    }
+
+    if (currentUser) {
       return true;
     } else {
       return false;
