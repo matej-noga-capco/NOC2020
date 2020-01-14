@@ -37,7 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/swagger-ui.html",
             "/webjars/**",
             // other public endpoints of your API may be appended to this array
-            "/actuator/**"
+            "/actuator/**",
+            "/frontend/**"
     };
     private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
@@ -52,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/**").authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/api/login")
