@@ -5,8 +5,6 @@ import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {ConstantsHelper} from "../_helpers/constants.helper";
 
-declare function require(url: string);
-
 const REST_API_URL_AUTH = ConstantsHelper.REST_API_BASE_URL + "/login";
 
 @Injectable({ providedIn: 'root' })
@@ -59,21 +57,11 @@ export class AuthenticationService {
     }
   }
 
-  /*async login(username, password) {
-      let loggingInUser = await this.userService.getUserByUsernameAndPassword(username, sha1(password))
 
-      if (loggingInUser) {
-        return this.currentUser;
-      }
-    } catch (error) {
-      console.warn(error);
-      return undefined;
-    }
-  }*/
-
-  logout() {
+  logout(): Observable<any> {
     localStorage.removeItem(ConstantsHelper.LS_USER_TOKEN_KEY);
     this.currentUser = undefined;
+    return this.httpClient.get('/api/logout');
   }
 
   public setCurrentUser(user: User) {
