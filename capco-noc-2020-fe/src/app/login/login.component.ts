@@ -4,6 +4,7 @@ import {AuthenticationService} from "../_services/authentication.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {LoginSnackBarComponent} from "./login-snack-bar/login-snack-bar.component";
 import {MatSnackBarRef} from "@angular/material/snack-bar/typings/snack-bar-ref";
+import {ConstantsHelper} from "../_helpers/constants.helper";
 
 @Component({
   selector: 'app-login',
@@ -12,9 +13,9 @@ import {MatSnackBarRef} from "@angular/material/snack-bar/typings/snack-bar-ref"
 })
 export class LoginComponent implements OnInit {
 
-  private username: string = '';
-  private password: string = '';
-  private loginSnackBar: MatSnackBarRef<any> = undefined;
+  public username: string = '';
+  public password: string = '';
+  public loginSnackBar: MatSnackBarRef<any> = undefined;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -24,12 +25,20 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  private onSubmitLogin() {
+  onSubmitLogin() {
     if (this.loginSnackBar) {
       this.loginSnackBar.dismiss();
     }
-    this.authenticationService.login(this.username, this.password).then(result => {
-      if (result) {
+
+    const data = "username=" + this.username + "&password=" + this.password;
+
+    this.authenticationService.login(data).subscribe(loggingUser => {
+      console.log(loggingUser);
+      if (loggingUser) {
+
+        this.authenticationService.setCurrentUser(loggingUser);
+        localStorage.setItem(ConstantsHelper.LS_USER_TOKEN_KEY, loggingUser.token);
+
         this.router.navigate(['/profile']);
       } else {
         this.openSnackBar();
@@ -44,7 +53,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  private keyPressed(event: KeyboardEvent) {
+  public keyPressed(event: KeyboardEvent) {
     if(event.keyCode === 13) {
       this.onSubmitLogin();
     }

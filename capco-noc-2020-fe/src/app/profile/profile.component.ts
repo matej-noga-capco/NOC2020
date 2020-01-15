@@ -14,9 +14,9 @@ import {Subject, Subscription} from "rxjs";
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  private currentUser: User = undefined;
-  private transactions: Subject<Transaction[]> = new Subject<Transaction[]>();
-  private savings: number = 0;
+  public currentUser: User = undefined;
+  public transactions: Subject<Transaction[]> = new Subject<Transaction[]>();
+  public savings: number = 0;
 
   subscriptions: Subscription[] = [];
 

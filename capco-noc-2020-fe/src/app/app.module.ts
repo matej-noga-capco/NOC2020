@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { FooterComponent } from './_modules/footer/footer.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {HeaderComponent} from "./_modules/header/header.component";
 import {StorageServiceModule} from "angular-webstorage-service";
 import { RouterModule, Routes } from '@angular/router'
@@ -24,6 +24,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import { TransactionsTableComponent } from './_modules/transactions-table/transactions-table.component';
 import {MatTableModule} from "@angular/material/table";
 import {DatePipe} from "@angular/common";
+import {HttpConfigInterceptor} from "./_services/interceptor/httpconfig.interceptor";
 
 const appRoutes: Routes = [
   {
@@ -81,7 +82,8 @@ const appRoutes: Routes = [
     MatTableModule
   ],
   providers: [
-      DatePipe
+      DatePipe,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true }
   ],
   exports: [
     HeaderComponent
