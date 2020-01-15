@@ -2,7 +2,6 @@
   {
     "id": 1,
     "username": "test",
-    "password": "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3",
     "firstName": "Peter",
     "lastName": "Hafko",
     "birthDate": "1968-11-16",
@@ -12,7 +11,6 @@
   {
     "id": 2,
     "username": "admin",
-    "password": "d033e22ae348aeb5660fc2140aec35850c4da997",
     "firstName": "Igor",
     "lastName": "Horvath",
     "birthDate": "1989-01-28",
