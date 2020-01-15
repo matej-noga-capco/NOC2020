@@ -41,12 +41,12 @@ export class LoginComponent implements OnInit {
 
         this.router.navigate(['/profile']);
       } else {
-        this.openSnackBar();
+        this.openLoginFailedSnackBar();
       }
     });
   }
 
-  private openSnackBar() {
+  private openLoginFailedSnackBar() {
     this.loginSnackBar = this._snackBar.openFromComponent(LoginSnackBarComponent, {
       duration: 3000,
       panelClass: ['sb-custom']
