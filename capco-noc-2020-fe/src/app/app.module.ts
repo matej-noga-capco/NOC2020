@@ -25,6 +25,7 @@ import { TransactionsTableComponent } from './_modules/transactions-table/transa
 import {MatTableModule} from "@angular/material/table";
 import {DatePipe} from "@angular/common";
 import {HttpConfigInterceptor} from "./_services/interceptor/httpconfig.interceptor";
+import {MatSelectModule} from "@angular/material/select";
 
 const appRoutes: Routes = [
   {
@@ -57,30 +58,31 @@ const appRoutes: Routes = [
   entryComponents: [
     LoginSnackBarComponent
   ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    LoggerModule.forRoot({
-      serverLoggingUrl: '/api/logs',
-      level: NgxLoggerLevel.DEBUG,
-      serverLogLevel: NgxLoggerLevel.ERROR
-    }),
-    RouterModule.forRoot(
-      appRoutes,
-      {enableTracing: false}
-    ),
-    StorageServiceModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatSnackBarModule,
-    MatSidenavModule,
-    MatTableModule
-  ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        LoggerModule.forRoot({
+            serverLoggingUrl: '/api/logs',
+            level: NgxLoggerLevel.DEBUG,
+            serverLogLevel: NgxLoggerLevel.ERROR
+        }),
+        RouterModule.forRoot(
+            appRoutes,
+            {enableTracing: false}
+        ),
+        StorageServiceModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatInputModule,
+        FormsModule,
+        MatSnackBarModule,
+        MatSidenavModule,
+        MatTableModule,
+        MatSelectModule
+    ],
   providers: [
       DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true }

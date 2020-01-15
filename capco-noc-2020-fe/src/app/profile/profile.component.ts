@@ -4,7 +4,8 @@ import {User} from "../_models/user";
 import {Router} from "@angular/router";
 import {Transaction} from "../_models/transaction";
 import {TransactionService} from "../_services/transaction.service";
-import {Subject, Subscription} from "rxjs";
+import {BehaviorSubject, Subject, Subscription} from "rxjs";
+import {UserService} from "../_services/user.service";
 
 @Component({
   selector: 'app-profile',
@@ -14,34 +15,54 @@ import {Subject, Subscription} from "rxjs";
 })
 export class ProfileComponent implements OnInit, OnDestroy {
 
-  public currentUser: User = undefined;
+  public currentUser: BehaviorSubject<User> = new BehaviorSubject<User>(undefined);
+  public users: User[] = [];
   public transactions: Subject<Transaction[]> = new Subject<Transaction[]>();
   public savings: number = 0;
 
   subscriptions: Subscription[] = [];
 
-  constructor(private authenticationService: AuthenticationService, private router: Router, private transactionService: TransactionService) { }
+  constructor(private authenticationService: AuthenticationService,
+              private userService: UserService,
+              private router: Router,
+              private transactionService: TransactionService) { }
 
   ngOnInit() {
-    this.currentUser = this.authenticationService.getCurrentUser();
 
-    this.transactionService.getTransactionsOfUser(this.currentUser.id).then(transactions => {
-      this.transactions.next(transactions);
-    });
+    this.userService.getUsers().then(users => {
+      this.users = users;
 
-    this.subscriptions.push(
-        this.transactions.subscribe(transactions => {
-          let sum = 0;
-          transactions.forEach(transaction => {
-            if (transaction.payer.id === this.currentUser.id) {
-              sum -= transaction.amount;
-            } else {
-              sum += transaction.amount;
+      this.subscriptions.push(
+          this.currentUser.subscribe(user => {
+            if (user) {
+              this.transactionService.getTransactionsOfUser(user.id).then(transactions => {
+                this.transactions.next(transactions);
+                this.calculateAccountAmount(transactions, user.id);
+              });
             }
-          });
-          this.savings = sum;
-        })
-    );
+          })
+      );
+    });
+  }
+
+  private calculateAccountAmount(transactions: Transaction[], currentUserId: number) {
+    let sum = 0;
+    transactions.forEach(transaction => {
+      if (transaction.payer.id === currentUserId) {
+        sum -= transaction.amount;
+      } else {
+        sum += transaction.amount;
+      }
+    });
+    this.savings = sum;
+  }
+
+  onChangeUser(selectedUserId: any) {
+    this.users.forEach(u => {
+      if(u.id == selectedUserId) {
+        this.currentUser.next(u);
+      }
+    })
   }
 
   logout() {
@@ -53,4 +74,5 @@ export class ProfileComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.subscriptions.forEach(s => { s.unsubscribe()});
   }
+
 }

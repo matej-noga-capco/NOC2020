@@ -4,7 +4,6 @@ import {AuthenticationService} from "../_services/authentication.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {LoginSnackBarComponent} from "./login-snack-bar/login-snack-bar.component";
 import {MatSnackBarRef} from "@angular/material/snack-bar/typings/snack-bar-ref";
-import {ConstantsHelper} from "../_helpers/constants.helper";
 
 @Component({
   selector: 'app-login',
@@ -33,12 +32,8 @@ export class LoginComponent implements OnInit {
     const data = "username=" + this.username + "&password=" + this.password;
 
     this.authenticationService.login(data).subscribe(loggingUser => {
-      console.log(loggingUser);
       if (loggingUser) {
-
-        this.authenticationService.setCurrentUser(loggingUser);
-        localStorage.setItem(ConstantsHelper.LS_USER_TOKEN_KEY, loggingUser.token);
-
+        this.authenticationService.setLoggedIn(true);
         this.router.navigate(['/profile']);
       } else {
         this.openLoginFailedSnackBar();

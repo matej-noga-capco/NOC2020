@@ -46,3 +46,11 @@
 .current-state {
   margin-top: 4rem;
 }
+
+.choose-user-title {
+  margin: 0;
+}
+
+.choose-user-select {
+  margin-bottom: 2rem;
+}

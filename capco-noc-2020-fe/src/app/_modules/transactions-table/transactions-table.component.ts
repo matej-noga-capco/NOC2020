@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Transaction} from "../../_models/transaction";
 import {User} from "../../_models/user";
-import {Observable, Subscription} from "rxjs";
+import {Observable, Subject, Subscription} from "rxjs";
 import {DatePipe} from "@angular/common";
 
 interface TransactionTableRow {
@@ -21,7 +21,7 @@ interface TransactionTableRow {
 export class TransactionsTableComponent implements OnInit, OnDestroy {
 
   @Input('transactions') transactions: Observable<Transaction[]>;
-  @Input('currentUser') currentUser: User;
+  @Input('currentUser') currentUser: Subject<User>;
 
   subscriptions: Subscription[] = [];
 

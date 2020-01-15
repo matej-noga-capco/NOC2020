@@ -1,30 +1,36 @@
 <mat-sidenav-container id="profile-page" fullscreen>
   <mat-sidenav mode="side" class="profile-content" opened>
-    <div id="user-image-section">
-      <img src="./assets/user-image.png" class="user-image">
-    </div>
-    <div id="user-basic-info-section">
-      <h2>{{currentUser.firstName}} {{currentUser.lastName}}</h2>
-    </div>
-    <div id="user-details">
-      <div class="user-details-row">
-        <p>IBAN</p>
-        <p><strong>{{currentUser.iban}}</strong></p>
+    <p class="choose-user-title"><strong>Choose user</strong></p>
+    <mat-form-field class="choose-user-select">
+      <mat-select (selectionChange)="onChangeUser($event.value)">
+        <mat-option *ngFor="let user of users" [value]="user.id">
+          {{user.firstName}} {{user.lastName}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="(currentUser | async)">
+      <div id="user-image-section">
+        <img src="./assets/user-image.png" class="user-image">
       </div>
-      <div class="user-details-row">
-        <p>Birth date</p>
-        <p><strong>{{currentUser.birthDate | date:'dd.MM.yyyy'}}</strong></p>
+      <div id="user-basic-info-section">
+        <h2>{{(currentUser | async).firstName}} {{(currentUser | async).lastName}}</h2>
       </div>
-      <div class="user-details-row">
-        <p>Username</p>
-        <p><strong>{{currentUser.username}}</strong></p>
+      <div id="user-details">
+        <div class="user-details-row">
+          <p>IBAN</p>
+          <p><strong>{{(currentUser | async).iban}}</strong></p>
+        </div>
+        <div class="user-details-row">
+          <p>Birth date</p>
+          <p><strong>{{(currentUser | async).birthDate | date:'dd.MM.yyyy'}}</strong></p>
+        </div>
       </div>
-    </div>
+    </ng-container>
     <div id="logout-section">
       <button mat-flat-button class="logout-button" (click)="logout()">Logout</button>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content class="transactions-content">
+  <mat-sidenav-content class="transactions-content" *ngIf="(currentUser | async)">
     <app-transactions-table [transactions]="transactions" [currentUser]="currentUser"></app-transactions-table>
     <div class="current-state">
       <p>Current account state</p>

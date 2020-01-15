@@ -33,6 +33,6 @@
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-  <tr mat-row [ngClass]="{'green-row': row.receiverIban === currentUser.iban, 'red-row': row.receiverIban !== currentUser.iban}" *matRowDef="let row; columns: columnsToDisplay;"></tr>
+  <tr mat-row [ngClass]="{'green-row': row.receiverIban === (currentUser | async).iban, 'red-row': row.receiverIban !== (currentUser | async).iban}" *matRowDef="let row; columns: columnsToDisplay;"></tr>
 </table>
 
