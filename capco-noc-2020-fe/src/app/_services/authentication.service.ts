@@ -1,21 +1,24 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {ConstantsHelper} from "../_helpers/constants.helper";
+import {AbstractService} from "./abstract.service";
+import {DOCUMENT} from "@angular/common";
 
-const REST_API_URL_AUTH = ConstantsHelper.REST_API_BASE_URL + "/login";
 
 @Injectable({ providedIn: 'root' })
-export class AuthenticationService {
+export class AuthenticationService extends AbstractService {
 
+  private readonly REST_API_URL_AUTH: string;
   private isLoggedIn: boolean = false;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, @Inject(DOCUMENT) protected document: Document) {
+    super(document);
+    this.REST_API_URL_AUTH = this.REST_API_BASE_URL + "/login";
   }
 
   login(data): Observable<any> {
     try {
-      return this.httpClient.post(REST_API_URL_AUTH, data);
+      return this.httpClient.post(this.REST_API_URL_AUTH, data);
     } catch (error) {
       console.warn(error);
       return undefined;
