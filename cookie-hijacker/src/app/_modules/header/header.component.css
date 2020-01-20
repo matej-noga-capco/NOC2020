@@ -1,0 +1,25 @@
+#header-box {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  padding: 1.5rem 2rem 1.5rem 2rem;
+  align-items: center;
+}
+
+.main-title {
+  font-size: 1.25rem;
+  width: 25rem;
+}
+
+.quotation {
+  font-style: italic;
+  width: 100%;
+  text-align: right;
+  margin-right: 5rem;
+}
+
+.logo img {
+  width: 20rem;
+  height: 3rem;
+}
