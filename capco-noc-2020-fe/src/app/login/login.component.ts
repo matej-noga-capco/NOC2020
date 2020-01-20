@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthenticationService} from "../_services/authentication.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {LoginSnackBarComponent} from "./login-snack-bar/login-snack-bar.component";
 import {MatSnackBarRef} from "@angular/material/snack-bar/typings/snack-bar-ref";
+import {DOCUMENT} from "@angular/common";
+import {ConstantsHelper} from "../_helpers/constants.helper";
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,10 @@ export class LoginComponent implements OnInit {
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router,
-    private _snackBar: MatSnackBar) { }
+    private _snackBar: MatSnackBar) {
+
+    sessionStorage.removeItem(ConstantsHelper.LS_USER_TOKEN_KEY);
+  }
 
   ngOnInit() {
   }

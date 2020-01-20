@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import {User} from "../_models/user";
-import {UserService} from "./user.service";
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {ConstantsHelper} from "../_helpers/constants.helper";
