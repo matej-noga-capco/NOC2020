@@ -1,20 +1,23 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Transaction} from "../_models/transaction";
 import {UserService} from "./user.service";
 import {HttpClient} from "@angular/common/http";
-import {ConstantsHelper} from "../_helpers/constants.helper";
-
-const REST_API_URL_TRANSACTIONS = ConstantsHelper.REST_API_BASE_URL + "/transaction";
+import {AbstractService} from "./abstract.service";
+import {DOCUMENT} from "@angular/common";
 
 @Injectable({ providedIn: 'root' })
-export class TransactionService {
+export class TransactionService extends AbstractService {
 
-  constructor(private httpClient: HttpClient, private userService: UserService) {
+  private readonly REST_API_URL_TRANSACTIONS: string;
+
+  constructor(private httpClient: HttpClient, private userService: UserService, @Inject(DOCUMENT) protected document: Document) {
+    super(document);
+    this.REST_API_URL_TRANSACTIONS = this.REST_API_BASE_URL + "/transaction";
   }
 
   public async getTransactions(): Promise<Transaction[]> {
 
-    let transactionsArray = await this.httpClient.get<Array<any>>(REST_API_URL_TRANSACTIONS).toPromise();
+    let transactionsArray = await this.httpClient.get<Array<any>>(this.REST_API_URL_TRANSACTIONS).toPromise();
     let transactionObjects = new Array<Transaction>();
 
     for(let i = 0; i < transactionsArray.length; i++) {

@@ -1,55 +1,26 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {User} from "../_models/user";
 import {HttpClient} from "@angular/common/http";
-import {ConstantsHelper} from "../_helpers/constants.helper";
+import {AbstractService} from "./abstract.service";
+import {DOCUMENT} from "@angular/common";
 
-const REST_API_URL_USERS = ConstantsHelper.REST_API_BASE_URL + "/user";
 
 @Injectable({ providedIn: 'root' })
-export class UserService {
+export class UserService extends AbstractService {
 
-  constructor(private httpClient: HttpClient) {
+  private readonly REST_API_URL_USERS: string;
+
+  constructor(private httpClient: HttpClient, @Inject(DOCUMENT) protected document: Document) {
+    super(document);
+    this.REST_API_URL_USERS = this.REST_API_BASE_URL + "/user";
   }
 
   public getUsers(): Promise<User[]> {
-    return this.httpClient.get<User[]>(REST_API_URL_USERS).toPromise();
+    return this.httpClient.get<User[]>(this.REST_API_URL_USERS).toPromise();
   }
 
   public async getUserById(id: number): Promise<User> {
-    return this.httpClient.get<User>(REST_API_URL_USERS+"/"+id).toPromise();
-  }
-
-  public async getUserByToken(token: string): Promise<User> {
-    return this.getUsers().then(users => {
-      let userWithGivenToken: User = undefined;
-      users.forEach(user => {
-        if ((user.token !== undefined || token !== undefined) && user.token === token) {
-          userWithGivenToken = user;
-        }
-      });
-
-      if (userWithGivenToken) {
-        return userWithGivenToken;
-      } else {
-        return undefined;
-      }
-    });
-  }
-
-  public async getUserByUsernameAndPassword(username: string, password: string): Promise<User> {
-    return this.getUsers().then(users => {
-      if (username && password) {
-        let foundUser: User = undefined;
-        users.forEach(user => {
-          if (user.username == username && user.password == password) {
-            foundUser = user;
-            foundUser.token = this.getRandomToken();
-          }
-        });
-        return foundUser;
-      }
-      throw new Error("Username and password can not be empty.");
-    });
+    return this.httpClient.get<User>(this.REST_API_URL_USERS+"/"+id).toPromise();
   }
 
   private getRandomToken() {
