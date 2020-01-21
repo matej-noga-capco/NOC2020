@@ -8,13 +8,5 @@ import {CookieService} from 'ngx-cookie-service';
 })
 export class AppComponent {
 
-  public cookies: any;
   title = 'cookie-hijacker';
-
-  constructor(private cookieService: CookieService) {
-  }
-
-  public onRunHijacking(): void {
-    this.cookies = this.cookieService.getAll();
-  }
 }
