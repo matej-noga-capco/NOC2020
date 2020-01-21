@@ -2,7 +2,10 @@
   <app-header></app-header>
   <div id="page-content">
     <div id="hijack-cookie-button-box">
-      <button mat-flat-button color="primary">Hijack cookie</button>
+      <button mat-flat-button color="primary" (click)="onRunHijacking()">Hijack cookie</button>
+    </div>
+    <div class="hijack-result">
+      {{cookies | json}}
     </div>
   </div>
   <app-footer></app-footer>

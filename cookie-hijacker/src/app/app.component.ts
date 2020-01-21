@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {CookieService} from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
+  public cookies: any;
   title = 'cookie-hijacker';
+
+  constructor(private cookieService: CookieService) {
+  }
+
+  public onRunHijacking(): void {
+    this.cookies = this.cookieService.getAll();
+  }
 }
