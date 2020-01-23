@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { FooterComponent } from './_modules/footer/footer.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule, HttpClientXsrfModule} from "@angular/common/http";
 import {HeaderComponent} from "./_modules/header/header.component";
 import {StorageServiceModule} from "angular-webstorage-service";
 import { RouterModule, Routes } from '@angular/router'
@@ -71,6 +71,7 @@ const appRoutes: Routes = [
             appRoutes,
             {enableTracing: false}
         ),
+        HttpClientXsrfModule.withOptions({cookieName: 'XSRF-TOKEN'}),
         StorageServiceModule,
         MatCardModule,
         MatButtonModule,

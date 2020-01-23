@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.session.MapSessionRepository;
 import org.springframework.session.SessionRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,6 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final String[] CSRF_IGNORE = {"/api/login/**"};
 
     private static final String[] AUTH_WHITELIST = {
             // -- swagger ui
@@ -47,7 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint((request, response, authException) -> response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
                 .and()
@@ -67,9 +71,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .and()
-                .httpBasic().disable();
+                .httpBasic().disable()
+                .csrf().ignoringAntMatchers(CSRF_IGNORE) // URI where CSRF check will not be applied
+                .csrfTokenRepository(csrfTokenRepository()).and()
+                .addFilterAfter(new CustomCsrfFilter(), CsrfFilter.class); // defines a repository;
     }
 
+    private CsrfTokenRepository csrfTokenRepository() {
+        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+        repository.setHeaderName(CustomCsrfFilter.CSRF_COOKIE_NAME);
+        return repository;
+    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder builder) throws Exception {
