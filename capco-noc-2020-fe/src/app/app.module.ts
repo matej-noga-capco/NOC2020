@@ -24,8 +24,10 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import { TransactionsTableComponent } from './_modules/transactions-table/transactions-table.component';
 import {MatTableModule} from "@angular/material/table";
 import {DatePipe} from "@angular/common";
-import {HttpConfigInterceptor} from "./_services/interceptor/httpconfig.interceptor";
+import {HttpConfigInterceptor} from "./_interceptors/httpconfig.interceptor";
 import {MatSelectModule} from "@angular/material/select";
+import {CookieService} from "ngx-cookie-service";
+import {ConstantsHelper} from "./_helpers/constants.helper";
 
 const appRoutes: Routes = [
   {
@@ -71,7 +73,7 @@ const appRoutes: Routes = [
             appRoutes,
             {enableTracing: false}
         ),
-        HttpClientXsrfModule.withOptions({cookieName: 'XSRF-TOKEN'}),
+        HttpClientXsrfModule.withOptions({cookieName: ConstantsHelper.CSRF_TOKEN_COOKIE_NAME}),
         StorageServiceModule,
         MatCardModule,
         MatButtonModule,
@@ -85,7 +87,7 @@ const appRoutes: Routes = [
         MatSelectModule
     ],
   providers: [
-      DatePipe,
+      DatePipe, CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpConfigInterceptor, multi: true }
   ],
   exports: [

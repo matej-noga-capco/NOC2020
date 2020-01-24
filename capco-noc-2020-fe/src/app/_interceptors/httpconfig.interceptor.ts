@@ -10,19 +10,22 @@ import {
 
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { ErrorService } from '../error.service';
-import {ConstantsHelper} from "../../_helpers/constants.helper";
+import { ErrorService } from '../_services/error.service';
+import {ConstantsHelper} from "../_helpers/constants.helper";
+import {CookieService} from "ngx-cookie-service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class HttpConfigInterceptor implements HttpInterceptor {
 
-    constructor(private errorService: ErrorService) {
+    constructor(private errorService: ErrorService, private cookieService: CookieService) {
     }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const token: string = sessionStorage.getItem(ConstantsHelper.LS_USER_TOKEN_KEY);
+
+        request = request.clone({ headers: request.headers.set('X-CSRF-TOKEN', this.cookieService.get(ConstantsHelper.CSRF_TOKEN_COOKIE_NAME)) });
 
         if (token) {
             request = request.clone({ headers: request.headers.set('x-auth-token', token) });

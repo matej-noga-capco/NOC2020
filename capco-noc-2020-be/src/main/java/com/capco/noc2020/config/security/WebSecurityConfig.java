@@ -11,9 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.session.MapSessionRepository;
 import org.springframework.session.SessionRepository;
 import org.springframework.web.cors.CorsConfiguration;
@@ -72,14 +74,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .clearAuthentication(true)
                 .and()
                 .httpBasic().disable()
-                .csrf().ignoringAntMatchers(CSRF_IGNORE) // URI where CSRF check will not be applied
-                .csrfTokenRepository(csrfTokenRepository()).and()
-                .addFilterAfter(new CustomCsrfFilter(), CsrfFilter.class); // defines a repository;
+                .csrf()
+                .csrfTokenRepository(csrfTokenRepository())
+                .and()
+                .addFilterAfter(new CustomCsrfFilter(), SessionManagementFilter.class);
     }
 
     private CsrfTokenRepository csrfTokenRepository() {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName(CustomCsrfFilter.CSRF_COOKIE_NAME);
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repository.setHeaderName("X-XSRF-TOKEN");
         return repository;
     }
 

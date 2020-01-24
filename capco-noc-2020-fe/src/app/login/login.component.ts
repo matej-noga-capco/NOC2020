@@ -6,6 +6,7 @@ import {LoginSnackBarComponent} from "./login-snack-bar/login-snack-bar.componen
 import {MatSnackBarRef} from "@angular/material/snack-bar/typings/snack-bar-ref";
 import {DOCUMENT} from "@angular/common";
 import {ConstantsHelper} from "../_helpers/constants.helper";
+import {Meta} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-login',

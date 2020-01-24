@@ -1,38 +1,40 @@
 package com.capco.noc2020.config.security;
 
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.WebUtils;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomCsrfFilter extends OncePerRequestFilter {
-
-    public static final String CSRF_COOKIE_NAME = "XSRF-TOKEN";
+public class CustomCsrfFilter implements Filter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
-        CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
 
-        if (csrf != null) {
+        CsrfToken csrf = (CsrfToken) servletRequest.getAttribute(CsrfToken.class.getName());
+        String token = csrf.getToken();
 
-            Cookie cookie = WebUtils.getCookie(request, CSRF_COOKIE_NAME);
-            String token = csrf.getToken();
-
-            if (cookie == null || token != null && !token.equals(cookie.getValue())) {
-                cookie = new Cookie(CSRF_COOKIE_NAME, token);
-                cookie.setPath("/");
-                response.addCookie(cookie);
-            }
+        if (token != null && isAuthenticating(servletRequest)) {
+            HttpServletResponse response = (HttpServletResponse) servletResponse;
+            Cookie cookie = new Cookie("XSRF-TOKEN", token);
+            cookie.setPath("/");
+            response.addCookie(cookie);
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(servletRequest, servletResponse);
     }
+
+    private boolean isAuthenticating(ServletRequest servletRequest) {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        return request.getRequestURI().equals("/frontend/login");
+    }
+
+    @Override
+    public void destroy() {}
 }
