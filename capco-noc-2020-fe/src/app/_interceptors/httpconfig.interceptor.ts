@@ -25,7 +25,7 @@ export class HttpConfigInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const token: string = sessionStorage.getItem(ConstantsHelper.LS_USER_TOKEN_KEY);
 
-        request = request.clone({ headers: request.headers.set('X-CSRF-TOKEN', this.cookieService.get(ConstantsHelper.CSRF_TOKEN_COOKIE_NAME)) });
+        request = request.clone({ headers: request.headers.set('X-XSRF-TOKEN', this.cookieService.get(ConstantsHelper.CSRF_TOKEN_COOKIE_NAME)) });
 
         if (token) {
             request = request.clone({ headers: request.headers.set('x-auth-token', token) });
