@@ -25,7 +25,7 @@ export class AppComponent {
       }
     };
 
-    xmlhttp.open("GET", "https://localhost:8080/api/transaction", true);
+    xmlhttp.open("POST", "https://localhost:8080/api/transaction", true);
     xmlhttp.setRequestHeader("Content-type", "application/json");
     xmlhttp.send("date=2019-01-15T08:09:12&payer=1&receiver=2&amount=999");
   }
