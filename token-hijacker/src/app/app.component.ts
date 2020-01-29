@@ -13,10 +13,9 @@ export class AppComponent {
   constructor(private http: HttpClient) {
   }
 
-  sendRequest(event: Event) {
-    sessionStorage.setItem("token", this.tokenValue);
-    this.http.get('http://localhost:8080/api/user').subscribe(res => {
-      alert(res);
-    });
+  async sendRequest(event: Event) {
+    const response = await this.http.get('http://localhost:8080/api/user', {
+      headers: {'x-auth-token': this.tokenValue}
+    }).toPromise();
   }
 }
