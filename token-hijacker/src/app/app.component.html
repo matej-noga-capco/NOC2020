@@ -1,0 +1,14 @@
+<div id="page-container">
+  <app-header></app-header>
+  <div id="page-content">
+    <div id="hijack-token-button-box">
+      <form class="example-form">
+        <mat-form-field class="token-box">
+          <input matInput placeholder="Token" [(ngModel)]="tokenValue" [ngModelOptions]="{standalone: true}" class="token-value">
+        </mat-form-field>
+        <button mat-flat-button class="submit-button" color="primary" (click)="sendRequest($event)">Submit</button>
+      </form>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>
